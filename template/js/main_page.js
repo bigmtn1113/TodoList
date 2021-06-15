@@ -60,9 +60,9 @@ function click_event()
     }
 }
 
-function addTodo(n) {
+function addTodo(i) {
     let row = document.createElement('div');
-    row.id = n;
+    row.id = 'todo' + i;
     row.className = 'row px-3 align-items-center todo-item rounded';
 
     /* 체크 버튼 */
@@ -72,7 +72,7 @@ function addTodo(n) {
     /* 할 일 마감 시간*/
     createDeadline(row);
     /* 할 일 수정 및 삭제 */
-    createTodoActions(row);
+    createTodoActions(row, i);
 
     document.querySelector('#list').appendChild(row);
 }
@@ -121,7 +121,7 @@ function createTodoText(row) {
     let todo_text_edit = document.createElement('input');
     todo_text_edit.type = 'text';
     todo_text_edit.className = 'form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none';
-    todo_text_input.value = document.querySelector('input').value;
+    todo_text_edit.value = document.querySelector('input').value;
 
     todo_text_div.appendChild(todo_text_input);
     todo_text_div.appendChild(todo_text_edit);
@@ -156,7 +156,7 @@ function createDeadline(row) {
     row.appendChild(div);
 }
 
-function createTodoActions(row) {
+function createTodoActions(row, i) {
     let div = document.createElement('div');
     div.className='col-auto m-1 p-0 todo-actions';
 
@@ -168,6 +168,11 @@ function createTodoActions(row) {
 
     let edit_icon = document.createElement('i');
     edit_icon.className = 'fa fa-pencil text-info btn m-0 p-0';
+
+    edit_icon.onclick = function() {
+        edit_icon.className += ' d-none';
+        edit(i);
+    }
 
     edit_icon_h5.appendChild(edit_icon);
 
@@ -206,6 +211,29 @@ function createTodoActions(row) {
     div.appendChild(create_info_div);
 
     row.appendChild(div);
+}
+
+function edit(i) {
+    let div = document.querySelector('#todo' + i);
+
+    let todo_text_div = div.childNodes[1];
+
+    let todo_text_input = todo_text_div.childNodes[0];
+    let todo_text_edit = todo_text_div.childNodes[1];
+
+    todo_text_input.className += ' d-none';
+    todo_text_edit.classList.remove('d-none');
+
+    todo_text_edit.onkeypress = function() {
+        if (event.keyCode == 13) {
+            todo_text_input.value = todo_text_edit.value;
+            
+            todo_text_input.classList.remove('d-none');
+            todo_text_edit.className += ' d-none';
+
+            div.childNodes[3].firstChild.firstChild.firstChild.classList.remove('d-none');
+        }
+    }
 }
 
 /* 글 추가 기능 및 수정 */
