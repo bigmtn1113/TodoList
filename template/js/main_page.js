@@ -75,6 +75,7 @@ function addTodo(i) {
     createTodoActions(row, i);
 
     document.querySelector('#list').appendChild(row);
+    document.querySelector('#calendar').innerHTML = "Due date not set";
 }
 
 function createCheckBtn(row) {
