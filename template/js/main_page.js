@@ -182,6 +182,10 @@ function createTodoActions(row, i) {
     let delete_icon = document.createElement('i');
     delete_icon.className = 'fa fa-trash-o text-danger btn m-0 p-0';
 
+    delete_icon.onclick = function() {
+        document.querySelector('#todo' + i).remove();
+    }
+
     delete_icon_h5.appendChild(delete_icon);
 
     icons_div.appendChild(edit_icon_h5);
