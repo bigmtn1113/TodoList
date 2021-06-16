@@ -20,6 +20,72 @@ window.onload = function () {
             $('.due-date-label').text(dateChangeEvent.date.getFullYear() + '/' + (dateChangeEvent.date.getMonth() + 1) + '/' + dateChangeEvent.date.getDate());
         });
     });
+
+    document.querySelector('#filter').addEventListener('change', function() {
+        let todo_list = document.querySelector('#list').childNodes;
+
+        switch (this.value) {
+            case 'all':
+                for (let todo of todo_list) {
+                    if (todo.classList === undefined) {
+                        continue;
+                    }
+                    
+                    if (todo.classList.contains('d-none')) {
+                        todo.classList.remove('d-none');
+                    }
+                }
+                break;
+
+            case 'completed':                
+                for (let todo of todo_list) {
+                    if (todo.classList === undefined) {
+                        continue;
+                    }
+
+                    if (todo.classList.contains('completed')) {
+                        if (todo.classList.contains('d-none')) {
+                            todo.classList.remove('d-none');
+                        }
+                    } else if (!todo.classList.contains('d-none')) {
+                        todo.className += ' d-none';
+                    }
+                }
+                break;
+
+            case 'active':
+                for (let todo of todo_list) {
+                    if (todo.classList === undefined) {
+                        continue;
+                    }
+
+                    if (todo.classList.contains('active')) {
+                        if (todo.classList.contains('d-none')) {
+                            todo.classList.remove('d-none');
+                        }
+                    } else if (!todo.classList.contains('d-none')) {
+                        todo.className += ' d-none';
+                    }
+                }
+                break;
+
+            case 'has-due-date':
+                for (let todo of todo_list) {
+                    if (todo.classList === undefined) {
+                        continue;
+                    }
+
+                    if (todo.classList.contains('has-due-date')) {
+                        if (todo.classList.contains('d-none')) {
+                            todo.classList.remove('d-none');
+                        }
+                    } else if (!todo.classList.contains('d-none')) {
+                        todo.className += ' d-none';
+                    }
+                }
+                break;
+        }
+    });
 };
 
 var todo_idx = 0;
@@ -42,7 +108,7 @@ function click_event()
 function addTodo(todo_idx) {
     let row = document.createElement('div');
     row.id = 'todo' + todo_idx;
-    row.className = 'row px-3 align-items-center todo-item rounded';
+    row.className = 'row px-3 align-items-center todo-item rounded active';
 
     createCheckBtn(row);
     createTodoText(row);
@@ -67,11 +133,17 @@ function createCheckBtn(row) {
     check_btn.className = 'fa fa-check-square-o text-primary btn m-0 p-0 d-none';
 
     uncheck_btn.onclick = function() {
+        row.classList.remove('active');
+        row.className += ' completed';
+
         uncheck_btn.className += ' d-none';
         check_btn.classList.remove('d-none');
     }
 
     check_btn.onclick = function() {
+        row.classList.remove('completed');
+        row.className += ' active';
+
         check_btn.className += ' d-none';
         uncheck_btn.classList.remove('d-none');
     }
@@ -121,6 +193,10 @@ function createDeadline(row) {
     let end_date_h6 = document.createElement('h6');
     end_date_h6.className = 'text my-2 pr-2';
     end_date_h6.innerHTML = document.querySelector('#calendar_label').innerHTML;
+
+    if (end_date_h6.innerHTML != 'Due date not set') {
+        row.className += ' has-due-date';
+    }
 
     end_date_div.appendChild(hourglass_icon);
     end_date_div.appendChild(end_date_h6);
