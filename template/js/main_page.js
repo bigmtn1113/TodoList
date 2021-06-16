@@ -69,6 +69,10 @@ window.onload = function () {
                 }
                 break;
         }
+
+        for (let todo of todo_list) {
+            createFadeIn(todo);
+        }
     });
 };
 
@@ -103,6 +107,7 @@ function sortAscendingOrder() {
 
     for (let todo of todo_list) {
         list.appendChild(todo);
+        createFadeIn(todo);
     }
 }
 
@@ -137,6 +142,7 @@ function sortDescendingOrder() {
 
     for (let todo of todo_list) {
         list.appendChild(todo);
+        createFadeIn(todo);
     }
 }
 
@@ -169,6 +175,8 @@ function addTodo(todo_idx) {
 
     document.querySelector('#list').appendChild(row);
     document.querySelector('#calendar_label').innerHTML = "Due date not set";
+
+    createFadeIn(row);
 }
 
 function createCheckBtn(row) {
@@ -287,7 +295,11 @@ function createTodoActions(row, todo_idx) {
     delete_icon.className = 'fa fa-trash-o text-danger btn m-0 p-0';
 
     delete_icon.onclick = function() {
-        document.querySelector('#todo' + todo_idx).remove();
+        row.style.opacity = 0;
+
+        setTimeout(function() {
+            row.remove();
+        }, 1000);
     }
 
     delete_icon_h5.appendChild(delete_icon);
@@ -319,6 +331,15 @@ function createTodoActions(row, todo_idx) {
     div.appendChild(create_info_div);
 
     row.appendChild(div);
+}
+
+function createFadeIn(row){
+    row.style.opacity = 0;
+    row.style.transition = "opacity 1s linear";
+
+    setTimeout(function() {
+        row.style.opacity = 1;
+    }, 0);
 }
 
 function edit(todo_idx) {
