@@ -22,15 +22,19 @@ window.onload = function () {
     });
 
     document.querySelector('#filter').addEventListener('change', function() {
-        let todo_list = document.querySelector('#list').childNodes;
+        let list_div_childNodes = document.querySelector('#list').childNodes;
+        
+        let todo_list = new Array();
+
+        for (let child of list_div_childNodes) {
+            if (child.classList !== undefined) {
+                todo_list.push(child);
+            }
+        }
 
         switch (this.value) {
             case 'all':
                 for (let todo of todo_list) {
-                    if (todo.classList === undefined) {
-                        continue;
-                    }
-                    
                     if (todo.classList.contains('d-none')) {
                         todo.classList.remove('d-none');
                     }
@@ -39,10 +43,6 @@ window.onload = function () {
 
             case 'completed':                
                 for (let todo of todo_list) {
-                    if (todo.classList === undefined) {
-                        continue;
-                    }
-
                     if (todo.classList.contains('completed')) {
                         if (todo.classList.contains('d-none')) {
                             todo.classList.remove('d-none');
@@ -55,10 +55,6 @@ window.onload = function () {
 
             case 'active':
                 for (let todo of todo_list) {
-                    if (todo.classList === undefined) {
-                        continue;
-                    }
-
                     if (todo.classList.contains('active')) {
                         if (todo.classList.contains('d-none')) {
                             todo.classList.remove('d-none');
@@ -71,10 +67,6 @@ window.onload = function () {
 
             case 'has-due-date':
                 for (let todo of todo_list) {
-                    if (todo.classList === undefined) {
-                        continue;
-                    }
-
                     if (todo.classList.contains('has-due-date')) {
                         if (todo.classList.contains('d-none')) {
                             todo.classList.remove('d-none');
