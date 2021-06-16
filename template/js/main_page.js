@@ -27,7 +27,7 @@ window.onload = function () {
         let todo_list = new Array();
 
         for (let child of list_div_childNodes) {
-            if (child.classList !== undefined) {
+            if (child.nodeName === 'DIV') {
                 todo_list.push(child);
             }
         }
