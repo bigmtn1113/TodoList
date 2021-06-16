@@ -78,9 +78,7 @@ function sortAscendingOrder() {
     let todo_list = new Array();
 
     for (let list_div_childNode of list_div_childNodes) {
-        if (list_div_childNode.nodeName === 'DIV') {
-            todo_list.push(list_div_childNode);
-        }
+        todo_list.push(list_div_childNode);
     }
 
     let sort = document.querySelector('#sort').value;
@@ -114,9 +112,7 @@ function sortDescendingOrder() {
     let todo_list = new Array();
 
     for (let list_div_childNode of list_div_childNodes) {
-        if (list_div_childNode.nodeName === 'DIV') {
-            todo_list.push(list_div_childNode);
-        }
+        todo_list.push(list_div_childNode);
     }
 
     let sort = document.querySelector('#sort').value;
