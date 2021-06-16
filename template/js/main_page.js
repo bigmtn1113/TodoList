@@ -80,6 +80,78 @@ window.onload = function () {
     });
 };
 
+function sortAscendingOrder() {
+    let list_div_childNodes = document.querySelector('#list').childNodes;
+        
+    let todo_lists = new Array();
+
+    for (let list_div_childNode of list_div_childNodes) {
+        if (list_div_childNode.nodeName === 'DIV') {
+            todo_lists.push(list_div_childNode);
+        }
+    }
+
+    let sort = document.querySelector('#sort').value;
+
+    if (sort === 'added-date') {
+        todo_lists.sort(function(a, b) {
+            // 현재로는 만든 날짜만 존재할 수 있으니, 향후 구현
+        });
+    } else {
+        todo_lists.sort(function(a, b) {
+            return (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML === b.childNodes[2].firstChild.firstChild.lastChild.innerHTML)
+            ? 0
+            : (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML < b.childNodes[2].firstChild.firstChild.lastChild.innerHTML) ? -1 : 1;
+        });
+    }
+
+    let lists = document.querySelector('#list');
+
+    while (lists.hasChildNodes()) {
+        lists.removeChild(lists.firstChild);
+    }
+
+    for (let todo_list of todo_lists) {
+        lists.appendChild(todo_list);
+    }
+}
+
+function sortDescendingOrder() {
+    let list_div_childNodes = document.querySelector('#list').childNodes;
+    
+    let todo_lists = new Array();
+
+    for (let list_div_childNode of list_div_childNodes) {
+        if (list_div_childNode.nodeName === 'DIV') {
+            todo_lists.push(list_div_childNode);
+        }
+    }
+
+    let sort = document.querySelector('#sort').value;
+
+    if (sort === 'added-date') {
+        todo_lists.sort(function(a, b) {
+            // 현재로는 만든 날짜만 존재할 수 있으니, 향후 구현
+        });
+    } else {
+        todo_lists.sort(function(a, b) {
+            return (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML === b.childNodes[2].firstChild.firstChild.lastChild.innerHTML)
+            ? 0
+            : (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML > b.childNodes[2].firstChild.firstChild.lastChild.innerHTML) ? -1 : 1;
+        });
+    }
+
+    let lists = document.querySelector('#list');
+
+    while (lists.hasChildNodes()) {
+        lists.removeChild(lists.firstChild);
+    }
+
+    for (let todo_list of todo_lists) {
+        lists.appendChild(todo_list);
+    }
+}
+
 var todo_idx = 0;
 
 function click_event()
