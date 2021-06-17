@@ -4,64 +4,29 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JOIN</title>
 
-  <!-- Bootstrap CSS -->
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  
-  <link rel="stylesheet" href="../css/join_page.css">
+  <link rel="stylesheet" type="text/css" href="../css/join_page.css">
 </head>
 
-<body id=body_1>
-  <div class="container">
-    <div class="input-form-backgroud row">
-      <div class="input-form col-md-12 mx-auto">
-        <h4 class="mb-3">JOIN</h4>
+<body width="100%" height="100%">
+  <form action="login_page.html" method="get" class="joinForm">
+    <h2>JOIN</h2>
 
-        <form class="validation-form" action="login_page.html" novalidate>
-          <div class="mb-3">
-            <label for="id">ID</label>
-            <input type="text" class="form-control" id="id" placeholder="" value="" required>
-            <div class="invalid-feedback">
-              Please type your ID.
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="pw">Password</label>
-            <input type="password" class="form-control" id="pw" placeholder="" value="" required>
-            <div class="invalid-feedback">
-              Please type your Password.
-            </div>
-          </div>
-
-          <div class="mb-3">
-            <label for="pw-confirm">Confirm Password</label>
-            <input type="password" class="form-control" id="pw-confirm" placeholder="" value="" required>
-            <div class="invalid-feedback">
-              Please type your password one more time.
-            </div>
-          </div>
-          
-          <hr class="mb-4">
-
-          <div class="custom-control custom-checkbox">
-            <input type="checkbox" class="custom-control-input" id="aggrement" required>
-            <label class="custom-control-label" for="aggrement">I agree to collect and use personal information.</label>
-          </div>
-
-          <div class="mb-4"></div>
-
-          <button class="btn btn-primary btn-lg btn-block" type="submit">JOIN</button>
-        </form>
-      </div>
+    <div class="idForm">
+      <input type="text" class="id" placeholder="ID">
     </div>
-  </div>
-  
-  <script src='../js/join_page.js'></script>
+
+    <div class="passForm">
+      <input type="password" class="pw" placeholder="PW">
+    </div>
+
+    <div class="passForm">
+      <input type="password" class="pw" placeholder="Confirm PW">
+    </div>
+
+    <button type="subbmit" class="btn">JOIN</button>
+  </form>
 </body>
 
 </html>
