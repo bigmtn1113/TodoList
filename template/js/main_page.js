@@ -21,50 +21,40 @@ window.onload = function () {
         });
     });
 
-    document.querySelector('#filter').addEventListener('change', function() {
-        let todo_list = document.querySelector('#list').childNodes;
+    $('#filter').on('change', function() {
+        let todo_list = $('#list').children();
 
         switch (this.value) {
             case 'all':
-                for (let todo of todo_list) {
-                    if (todo.classList.contains('d-none')) {
-                        todo.classList.remove('d-none');
-                    }
-                }
+                todo_list.removeClass('d-none');
                 break;
 
             case 'completed':                
                 for (let todo of todo_list) {
-                    if (todo.classList.contains('completed')) {
-                        if (todo.classList.contains('d-none')) {
-                            todo.classList.remove('d-none');
-                        }
-                    } else if (!todo.classList.contains('d-none')) {
-                        todo.className += ' d-none';
+                    if ($(todo).hasClass('completed')) {
+                        $(todo).removeClass('d-none');
+                    } else if (!$(todo).hasClass('d-none')) {
+                        $(todo).addClass('d-none');
                     }
                 }
                 break;
 
             case 'active':
                 for (let todo of todo_list) {
-                    if (todo.classList.contains('active')) {
-                        if (todo.classList.contains('d-none')) {
-                            todo.classList.remove('d-none');
-                        }
-                    } else if (!todo.classList.contains('d-none')) {
-                        todo.className += ' d-none';
+                    if ($(todo).hasClass('active')) {
+                        $(todo).removeClass('d-none');
+                    } else if (!$(todo).hasClass('d-none')) {
+                        $(todo).addClass('d-none');
                     }
                 }
                 break;
 
             case 'has-due-date':
                 for (let todo of todo_list) {
-                    if (todo.classList.contains('has-due-date')) {
-                        if (todo.classList.contains('d-none')) {
-                            todo.classList.remove('d-none');
-                        }
-                    } else if (!todo.classList.contains('d-none')) {
-                        todo.className += ' d-none';
+                    if ($(todo).hasClass('has-due-date')) {
+                        $(todo).removeClass('d-none');
+                    } else if (!$(todo).hasClass('d-none')) {
+                        $(todo).addClass('d-none');
                     }
                 }
                 break;
@@ -77,7 +67,7 @@ window.onload = function () {
 };
 
 function sortAscendingOrder() {
-    let list_div_childNodes = document.querySelector('#list').childNodes;
+    let list_div_childNodes = $('#list').children();
         
     let todo_list = new Array();
 
@@ -85,7 +75,7 @@ function sortAscendingOrder() {
         todo_list.push(list_div_childNode);
     }
 
-    let sort = document.querySelector('#sort').value;
+    let sort = $('#sort').val();
 
     if (sort === 'added-date') {
         todo_list.sort(function(a, b) {
@@ -93,26 +83,24 @@ function sortAscendingOrder() {
         });
     } else {
         todo_list.sort(function(a, b) {
-            return (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML === b.childNodes[2].firstChild.firstChild.lastChild.innerHTML)
+            return ($(a).find('h6').html() === $(b).find('h6').html())
             ? 0
-            : (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML < b.childNodes[2].firstChild.firstChild.lastChild.innerHTML) ? -1 : 1;
+            : ($(a).find('h6').html() < $(b).find('h6').html()) ? -1 : 1;
         });
     }
 
-    let list = document.querySelector('#list');
+    let list = $('#list');
 
-    while (list.hasChildNodes()) {
-        list.removeChild(list.firstChild);
-    }
+    list.children().remove();
 
     for (let todo of todo_list) {
-        list.appendChild(todo);
+        list.append(todo);
         createFadeIn(todo);
     }
 }
 
 function sortDescendingOrder() {
-    let list_div_childNodes = document.querySelector('#list').childNodes;
+    let list_div_childNodes = $('#list').children();
     
     let todo_list = new Array();
 
@@ -120,7 +108,7 @@ function sortDescendingOrder() {
         todo_list.push(list_div_childNode);
     }
 
-    let sort = document.querySelector('#sort').value;
+    let sort = $('#sort').val();
 
     if (sort === 'added-date') {
         todo_list.sort(function(a, b) {
@@ -128,20 +116,18 @@ function sortDescendingOrder() {
         });
     } else {
         todo_list.sort(function(a, b) {
-            return (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML === b.childNodes[2].firstChild.firstChild.lastChild.innerHTML)
+            return ($(a).find('h6').html() === $(b).find('h6').html())
             ? 0
-            : (a.childNodes[2].firstChild.firstChild.lastChild.innerHTML > b.childNodes[2].firstChild.firstChild.lastChild.innerHTML) ? -1 : 1;
+            : ($(a).find('h6').html() > $(b).find('h6').html()) ? -1 : 1;
         });
     }
 
-    let list = document.querySelector('#list');
+    let list = $('#list');
 
-    while (list.hasChildNodes()) {
-        list.removeChild(list.firstChild);
-    }
+    list.children().remove();
 
     for (let todo of todo_list) {
-        list.appendChild(todo);
+        list.append(todo);
         createFadeIn(todo);
     }
 }
@@ -150,7 +136,7 @@ var todo_idx = 0;
 
 function click_event()
 {
-    if(!document.querySelector('input').value)
+    if(!$('input').val())
     {
         alert('Please input your list')
     }
@@ -159,7 +145,7 @@ function click_event()
         addTodo(todo_idx);
         ++todo_idx;
 
-        document.querySelector('input').value = '';
+        $('input').eq(0).val('');
     }
 }
 
@@ -173,8 +159,8 @@ function addTodo(todo_idx) {
     createDeadline(row);
     createTodoActions(row, todo_idx);
 
-    document.querySelector('#list').appendChild(row);
-    document.querySelector('#calendar_label').innerHTML = "Due date not set";
+    $('#list').append(row);
+    $('#calendar_label').html("Due date not set");
 
     createFadeIn(row);
 }
@@ -224,12 +210,12 @@ function createTodoText(row) {
     input_text.type = 'text';
     input_text.className = 'form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3';
     input_text.readOnly = true;
-    input_text.value = document.querySelector('input').value;
+    input_text.value = $('input').val();
     
     let edit_text = document.createElement('input');
     edit_text.type = 'text';
     edit_text.className = 'form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none';
-    edit_text.value = document.querySelector('input').value;
+    edit_text.value = $('input').val();
 
     div.appendChild(input_text);
     div.appendChild(edit_text);
@@ -252,7 +238,7 @@ function createDeadline(row) {
 
     let end_date_h6 = document.createElement('h6');
     end_date_h6.className = 'text my-2 pr-2';
-    end_date_h6.innerHTML = document.querySelector('#calendar_label').innerHTML;
+    end_date_h6.innerHTML = $('#calendar_label').html();
 
     if (end_date_h6.innerHTML != 'Due date not set') {
         row.className += ' has-due-date';
@@ -343,24 +329,24 @@ function createFadeIn(row){
 }
 
 function edit(todo_idx) {
-    let div = document.querySelector('#todo' + todo_idx);
+    let div = $('#todo' + todo_idx);
 
-    let todo_text_div = div.childNodes[1];
+    let todo_text_div = div.children().eq(1);
 
-    let input_text = todo_text_div.childNodes[0];
-    let edit_text = todo_text_div.childNodes[1];
+    let input_text = todo_text_div.children().first();
+    let edit_text = todo_text_div.children().last();
 
-    input_text.className += ' d-none';
-    edit_text.classList.remove('d-none');
+    input_text.addClass('d-none');
+    edit_text.removeClass('d-none');
 
-    edit_text.onkeypress = function() {
+    edit_text.on('keypress', function() {
         if (event.keyCode == 13) {
-            input_text.value = edit_text.value;
+            input_text.val(edit_text.val());
             
-            input_text.classList.remove('d-none');
-            edit_text.className += ' d-none';
+            input_text.removeClass('d-none');
+            edit_text.addClass('d-none');
 
-            div.childNodes[3].firstChild.firstChild.firstChild.classList.remove('d-none');
+            div.find('.fa-pencil').removeClass('d-none');
         }
-    }
+    });
 }
