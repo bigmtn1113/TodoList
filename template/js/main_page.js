@@ -1,4 +1,6 @@
 window.onload = function () {
+  $("body").fadeIn('slow');
+
   bootlint.showLintReportForCurrentDocument([], {
     hasProblems: false,
     problemFree: false

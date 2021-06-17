@@ -16,6 +16,8 @@ body {
 }
 
 .loginForm, .joinForm{
+  display: none;
+
   position:absolute;
   width:300px;
   height:400px;
