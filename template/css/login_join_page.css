@@ -15,7 +15,7 @@ body {
   background: linear-gradient(to top right, #92b5db 0%, #78d9e6b6 100%);
 }
 
-.joinForm {
+.loginForm, .joinForm{
   position:absolute;
   width:300px;
   height:400px;
@@ -28,7 +28,7 @@ body {
   border-radius: 15px;
 }
 
-.joinForm h2{
+.loginForm h2, .joinForm h2{
   text-align: center;
   margin: 30px;
 }
