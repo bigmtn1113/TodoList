@@ -18,6 +18,8 @@ window.onload = function () {
         $('.due-date-button').datepicker('show').on('changeDate', function (dateChangeEvent) {
             $('.due-date-button').datepicker('hide');
             $('.due-date-label').text(dateChangeEvent.date.getFullYear() + '/' + (dateChangeEvent.date.getMonth() + 1) + '/' + dateChangeEvent.date.getDate());
+            
+            $('input').eq(0).focus();
         });
     });
 
