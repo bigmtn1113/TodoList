@@ -335,15 +335,6 @@ function createTodoActions(row, todo_idx) {
   row.appendChild(div);
 }
 
-function createFadeIn(row){
-  row.style.opacity = 0;
-  row.style.transition = "opacity 1s linear";
-
-  setTimeout(function() {
-    row.style.opacity = 1;
-  }, 0);
-}
-
 function changeDate(row, hourglass_icon, end_date_h6) {
   $(hourglass_icon).datepicker('show').on('changeDate', function (dateChangeEvent) {
     $(hourglass_icon).datepicker('hide');
@@ -376,4 +367,13 @@ function edit(todo_idx) {
       div.find('.fa-pencil').removeClass('d-none');
     }
   });
+}
+
+function createFadeIn(row){
+  row.style.opacity = 0;
+  row.style.transition = "opacity 1s linear";
+
+  setTimeout(function() {
+    row.style.opacity = 1;
+  }, 0);
 }
