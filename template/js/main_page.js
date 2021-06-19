@@ -248,6 +248,18 @@ function createDeadline(row) {
     row.className += ' has-due-date';
   }
 
+  hourglass_icon.onclick = function() {
+    $(hourglass_icon).datepicker({
+      format: 'dd/mm/yyyy',
+      autoclose: true,
+      todayHighlight: true,
+      startDate: new Date(),
+      orientation: 'top left'
+    });
+
+    changeDate(row, hourglass_icon, end_date_h6);
+  };
+
   end_date_div.appendChild(hourglass_icon);
   end_date_div.appendChild(end_date_h6);
 
@@ -330,6 +342,17 @@ function createFadeIn(row){
   setTimeout(function() {
     row.style.opacity = 1;
   }, 0);
+}
+
+function changeDate(row, hourglass_icon, end_date_h6) {
+  $(hourglass_icon).datepicker('show').on('changeDate', function (dateChangeEvent) {
+    $(hourglass_icon).datepicker('hide');
+    $(end_date_h6).text(dateChangeEvent.date.getFullYear() + '/' + (dateChangeEvent.date.getMonth() + 1) + '/' + dateChangeEvent.date.getDate());
+
+    if (!row.classList.contains('has-due-date')) {
+      row.className += ' has-due-date';
+    }
+  });
 }
 
 function edit(todo_idx) {
