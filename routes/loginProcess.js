@@ -11,9 +11,9 @@ router.post('/', (req, res) => {
     mariadbConn.login(id, pw).then((row) => {
         if (row[0] !== undefined) {
             res.sendFile(path.join(__dirname, '../public/html/main_page.html'));
+        } else {
+            res.redirect('/login');
         }
-
-        res.sendFile(path.join(__dirname, '../public/html/login_page.html'));
     });
 });
 
