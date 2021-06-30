@@ -7,6 +7,7 @@ dotenv.config();
 const indexRouter = require('./routes');
 const loginRouter = require('./routes/login');
 const joinRouter = require('./routes/join');
+const loginProcessRouter = require('./routes/loginProcess');
 const joinProcessRouter = require('./routes/joinProcess');
 
 const app = express();
@@ -20,6 +21,7 @@ app.use('/static', express.static(__dirname + '/public'));
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/join', joinRouter);
+app.use('/loginProcess', loginProcessRouter);
 app.use('/joinProcess', joinProcessRouter);
 
 app.listen(app.get('port'), () => {

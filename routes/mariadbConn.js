@@ -9,6 +9,24 @@ const pool = mariadb.createPool({
     , connectionLimit: 5
 });
 
+async function login(userId, userPw) {
+    let conn, row;
+
+    try {
+        conn = await pool.getConnection();
+        conn.query('use users');
+        row = await conn.query(`select * from users where user_id='${userId}' and user_pw='${userPw}'`);
+    } catch(err) {
+        throw err;
+    } finally {
+        if(conn) {
+            conn.end();
+        }
+
+        return row;
+    }
+}
+
 async function join(userId, userPw) {
     let conn;
 
@@ -25,4 +43,4 @@ async function join(userId, userPw) {
     }
 }
 
-module.exports = {join : join};
+module.exports = {login: login, join: join};
