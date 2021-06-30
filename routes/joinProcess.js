@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
     let id = req.body['id'];
     let pw = req.body['pw'];
 
-    mariadbConn.addUser(id, pw).then(() => {
+    mariadbConn.join(id, pw).then(() => {
         res.sendFile(path.join(__dirname, '../public/html/login_page.html'));
     });
 });
