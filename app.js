@@ -11,6 +11,7 @@ app.set('port', process.env.PORT);
 
 app.use(morgan('dev'));
 
+app.use('/static', express.static(__dirname + '/public'));
 app.use('/', indexRouter);
 
 app.listen(app.get('port'), () => {
