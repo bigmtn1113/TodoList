@@ -1,4 +1,5 @@
 const express = require('express');
+const morgan = require('morgan');
 const dotenv = require('dotenv');
 const path = require('path');
 
@@ -6,6 +7,8 @@ dotenv.config();
 
 const app = express();
 app.set('port', process.env.PORT);
+
+app.use(morgan('dev'));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/public/html/index.html'));
