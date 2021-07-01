@@ -10,9 +10,13 @@ router.post('/', (req, res) => {
 
     mariadbConn.login(id, pw).then((row) => {
         if (row[0] !== undefined) {
-            req.session.loginUserId = row[0].user_id;
+            if (row[0].user_pw === pw) {
+                req.session.loginUser = row[0];
 
-            res.render('main_page', {loginUserId: req.session.loginUserId});
+                res.render('main_page', {loginUser: req.session.loginUser});
+            } else {
+                res.redirect('/login');
+            }
         } else {
             res.redirect('/login');
         }

@@ -15,7 +15,7 @@ async function login(userId, userPw) {
     try {
         conn = await pool.getConnection();
         conn.query('use todolist');
-        row = await conn.query(`select * from users where user_id='${userId}' and user_pw='${userPw}'`);
+        row = await conn.query(`select * from users where user_id='${userId}'`);
     } catch(err) {
         throw err;
     } finally {
