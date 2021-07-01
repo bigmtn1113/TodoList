@@ -1,8 +1,18 @@
 let userTodoList;
+let todo_idx;
 
-window.onload = async function () {
-  userTodoList = await axios.get('/userTodoList');
-  userTodoList = userTodoList.data;
+window.onload = function () {
+  getUserTodoList = async function() {
+    userTodoList = await axios.get('/userTodoList');
+    userTodoList = userTodoList.data;
+
+    userTodoList.forEach(element => {
+      todo_idx = element.todo_id;
+      addTodo(todo_idx, element);
+    });
+  }
+  
+  getUserTodoList();
 
   $("body").fadeIn('slow');
 
@@ -24,7 +34,7 @@ window.onload = async function () {
   $('.due-date-button').on('click', function (event) {
     $('.due-date-button').datepicker('show').on('changeDate', function (dateChangeEvent) {
       $('.due-date-button').datepicker('hide');
-      $('.due-date-label').text(dateChangeEvent.date.getFullYear() + '/' + (dateChangeEvent.date.getMonth() + 1) + '/' + dateChangeEvent.date.getDate());
+      $('.due-date-label').text(dateChangeEvent.date.getFullYear() + '/' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '/' + ('0' + dateChangeEvent.date.getDate()).slice(-2));
       
       $('input').eq(0).focus();
     });
@@ -141,8 +151,6 @@ function sortDescendingOrder() {
   }
 }
 
-var todo_idx = 0;
-
 function click_event()
 {
   if(!$('input').val())
@@ -151,22 +159,22 @@ function click_event()
   }
   else
   {
-    addTodo(todo_idx);
+    addTodo(todo_idx, null);
     ++todo_idx;
 
     $('input').eq(0).val('');
   }
 }
 
-function addTodo(todo_idx) {
+function addTodo(todo_idx, element) {
   let row = document.createElement('div');
   row.id = 'todo' + todo_idx;
   row.className = 'row px-3 align-items-center todo-item rounded active';
 
   createCheckBtn(row);
-  createTodoText(row);
-  createDeadline(row);
-  createTodoActions(row, todo_idx);
+  createTodoText(row, element);
+  createDeadline(row, element);
+  createTodoActions(row, todo_idx, element);
 
   $('#list').append(row);
   $('#calendar_label').html("Due date not set");
@@ -211,7 +219,7 @@ function createCheckBtn(row) {
   row.appendChild(check_btn_div);
 }
 
-function createTodoText(row) {
+function createTodoText(row, element) {
   let div = document.createElement('div');
   div.className='col px-1 m-1 d-flex align-items-center';
 
@@ -219,12 +227,12 @@ function createTodoText(row) {
   input_text.type = 'text';
   input_text.className = 'form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3';
   input_text.readOnly = true;
-  input_text.value = $('input').val();
+  input_text.value = (!element) ? $('input').val() : element.content;
   
   let edit_text = document.createElement('input');
   edit_text.type = 'text';
   edit_text.className = 'form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none';
-  edit_text.value = $('input').val();
+  edit_text.value = (!element) ? $('input').val() : element.content;
 
   div.appendChild(input_text);
   div.appendChild(edit_text);
@@ -232,7 +240,7 @@ function createTodoText(row) {
   row.appendChild(div);
 }
 
-function createDeadline(row) {
+function createDeadline(row, element) {
   let div = document.createElement('div');
   div.className='col-auto m-1 p-0 px-3';
 
@@ -247,7 +255,11 @@ function createDeadline(row) {
 
   let end_date_h6 = document.createElement('h6');
   end_date_h6.className = 'text my-2 pr-2';
-  end_date_h6.innerHTML = $('#calendar_label').html();
+  end_date_h6.innerHTML = (!element) ? $('#calendar_label').html() : element.due_date;
+
+  if (element && (element.due_date === null)) {
+    end_date_h6.innerHTML = 'Due date not set';
+  }
 
   if (end_date_h6.innerHTML != 'Due date not set') {
     row.className += ' has-due-date';
@@ -275,7 +287,7 @@ function createDeadline(row) {
   row.appendChild(div);
 }
 
-function createTodoActions(row, todo_idx) {
+function createTodoActions(row, todo_idx, element) {
   let div = document.createElement('div');
   div.className='col-auto m-1 p-0 todo-actions';
 
@@ -327,7 +339,9 @@ function createTodoActions(row, todo_idx) {
   create_info_date.className = 'date-label my-2 text-black-50';
 
   let date = new Date();
-  create_info_date.innerHTML = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate();
+  create_info_date.innerHTML = (!element)
+    ? date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2)
+    : element.start_date.substring(0, 4) + '/' + element.start_date.substring(5, 7) + '/' + element.start_date.substring(8, 10);
 
   create_info_items_div.appendChild(create_info_icon);
   create_info_items_div.appendChild(create_info_date);
