@@ -14,7 +14,7 @@ async function login(userId, userPw) {
 
     try {
         conn = await pool.getConnection();
-        conn.query('use users');
+        conn.query('use todolist');
         row = await conn.query(`select * from users where user_id='${userId}' and user_pw='${userPw}'`);
     } catch(err) {
         throw err;
@@ -32,7 +32,7 @@ async function join(userId, userPw) {
 
     try {
         conn = await pool.getConnection();
-        conn.query('use users');
+        conn.query('use todolist');
         await conn.query(`insert into users values('${userId}', '${userPw}')`);
     } catch(err) {
         throw err;
