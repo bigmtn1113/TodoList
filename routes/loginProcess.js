@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
             if (row[0].user_pw === pw) {
                 req.session.loginUserId = id;
 
-                res.render('main_page', {loginUserId: req.session.loginUserId});
+                res.render('main', {loginUserId: req.session.loginUserId});
             } else {
                 res.redirect('/login');
             }
