@@ -1,6 +1,8 @@
+let userTodoList;
+
 window.onload = async function () {
-  let test = await axios.get('/userTodoList');
-  console.log(test.data[0]);
+  userTodoList = await axios.get('/userTodoList');
+  userTodoList = userTodoList.data;
 
   $("body").fadeIn('slow');
 
