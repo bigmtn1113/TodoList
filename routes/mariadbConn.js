@@ -27,6 +27,24 @@ async function getUser(userId) {
     }
 }
 
+async function getTodoListOfUser(userId) {
+    let conn, rows;
+
+    try {
+        conn = await pool.getConnection();
+        conn.query('use todolist');
+        rows = await conn.query(`select * from todo where user_id='${userId}'`);
+    } catch(err) {
+        throw err;
+    } finally {
+        if(conn) {
+            conn.end();
+        }
+
+        return rows;
+    }
+}
+
 async function addUser(userId, userPw) {
     let conn;
 
@@ -43,4 +61,4 @@ async function addUser(userId, userPw) {
     }
 }
 
-module.exports = {getUser: getUser, addUser: addUser};
+module.exports = {getUser: getUser, getTodoListOfUser: getTodoListOfUser, addUser: addUser};

@@ -1,4 +1,6 @@
 window.onload = function () {
+  window.location.href='/userTodoList';
+
   $("body").fadeIn('slow');
 
   bootlint.showLintReportForCurrentDocument([], {

@@ -11,6 +11,7 @@ const loginRouter = require('./routes/login');
 const joinRouter = require('./routes/join');
 const loginProcessRouter = require('./routes/loginProcess');
 const joinProcessRouter = require('./routes/joinProcess');
+const userTodoListRouter = require('./routes/userTodoList');
 const logoutRouter = require('./routes/logout');
 
 const app = express();
@@ -37,6 +38,7 @@ app.use('/login', loginRouter);
 app.use('/join', joinRouter);
 app.use('/loginProcess', loginProcessRouter);
 app.use('/joinProcess', joinProcessRouter);
+app.use('/userTodoList', userTodoListRouter);
 app.use('/logout', logoutRouter);
 
 app.set('view engine', 'ejs');
