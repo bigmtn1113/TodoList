@@ -44,3 +44,8 @@ body {
 .todo-item.editing .todo-actions .edit-icon {
   display: none !important;
 }
+
+#logout-btn {
+  float: right;
+  margin-right: 10px;
+}
