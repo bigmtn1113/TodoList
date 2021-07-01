@@ -9,7 +9,7 @@ const pool = mariadb.createPool({
     , connectionLimit: 5
 });
 
-async function login(userId, userPw) {
+async function getUser(userId) {
     let conn, row;
 
     try {
@@ -27,7 +27,7 @@ async function login(userId, userPw) {
     }
 }
 
-async function join(userId, userPw) {
+async function addUser(userId, userPw) {
     let conn;
 
     try {
@@ -43,4 +43,4 @@ async function join(userId, userPw) {
     }
 }
 
-module.exports = {login: login, join: join};
+module.exports = {getUser: getUser, addUser: addUser};

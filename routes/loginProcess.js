@@ -8,7 +8,7 @@ router.post('/', (req, res) => {
     let id = req.body['id'];
     let pw = req.body['pw'];
 
-    mariadbConn.login(id, pw).then((row) => {
+    mariadbConn.getUser(id, pw).then((row) => {
         if (row[0] !== undefined) {
             if (row[0].user_pw === pw) {
                 req.session.loginUserId = id;
