@@ -1,5 +1,6 @@
-window.onload = function () {
-  window.location.href='/userTodoList';
+window.onload = async function () {
+  let test = await axios.get('/userTodoList');
+  console.log(test.data[0]);
 
   $("body").fadeIn('slow');
 

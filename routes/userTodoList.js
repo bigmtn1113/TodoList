@@ -8,7 +8,8 @@ router.get('/', (req, res) => {
     id = req.session.loginUserId;
 
     mariadbConn.getTodoListOfUser(id).then((rows) => {
-        console.log(rows[1]);
+        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+        res.end(JSON.stringify(rows));
     });
 });
 
