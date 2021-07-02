@@ -1,5 +1,4 @@
 let userTodoList;
-let todo_id;
 
 window.onload = function () {
   getUserTodoList = async function() {
@@ -7,14 +6,13 @@ window.onload = function () {
     userTodoList = userTodoList.data;
 
     userTodoList.forEach(element => {
-      todo_id = element.todo_id;
       element.start_date = element.start_date.substring(0, 4) + '-' + element.start_date.substring(5, 7) + '-' + element.start_date.substring(8, 10);
       
       if (element.due_date) {
         element.due_date = element.due_date.substring(0, 4) + '-' + element.due_date.substring(5, 7) + '-' + ('0' + (Number(element.due_date.substring(8, 10)) + 1)).slice(-2);
       }
 
-      addTodo(todo_id, element);
+      addTodo(element);
     });
   }
   
@@ -169,15 +167,14 @@ function click_event()
   }
   else
   {
-    addTodo(++todo_id, null);
+    addTodo(null);
 
     $('input').eq(0).val('');
   }
 }
 
-function addTodo(todo_id, element) {
+function addTodo(element) {
   let row = document.createElement('div');
-  row.id = 'todo' + todo_id;
   row.className = 'row px-3 align-items-center todo-item rounded active';
 
   if (!element) {
@@ -187,22 +184,28 @@ function addTodo(todo_id, element) {
       due_date = null;
     }
 
+    let todo_id;
+
     addTodoToDB = async () => {
-      await axios.get('/addTodo', {
+      todo_id = await axios.get('/addTodo', {
         params: {
           content: document.querySelector('input').value
           , due_date: due_date
         }
       });
+
+      row.id = 'todo' + todo_id.data[0].todo_id;
     }
     
     addTodoToDB();
+  } else {
+    row.id = 'todo' + element.todo_id;
   }
 
   createCheckBtn(row, element);
   createTodoText(row, element);
   createDeadline(row, element);
-  createTodoActions(row, todo_id, element);
+  createTodoActions(row, element);
 
   $('#list').append(row);
   $('#calendar_label').html("Due date not set");
@@ -337,7 +340,7 @@ function createDeadline(row, element) {
   row.appendChild(div);
 }
 
-function createTodoActions(row, todo_id, element) {
+function createTodoActions(row, element) {
   let div = document.createElement('div');
   div.className='col-auto m-1 p-0 todo-actions';
 
@@ -352,7 +355,7 @@ function createTodoActions(row, todo_id, element) {
 
   edit_icon.onclick = function() {
     edit_icon.className += ' d-none';
-    edit(todo_id, element);
+    edit(row.id, element);
   }
 
   edit_icon_h5.appendChild(edit_icon);
@@ -364,13 +367,13 @@ function createTodoActions(row, todo_id, element) {
   delete_icon.className = 'fa fa-trash-o text-danger btn m-0 p-0';
 
   delete_icon.onclick = async function() {
-    if (element) {
-      await axios.get('/deleteTodo', {
-        params: {
-          todo_id: element.todo_id
-        }
-      });
-    }
+    let todo_id = (element) ? element.todo_id : row.id.slice(4);
+
+    await axios.get('/deleteTodo', {
+      params: {
+        todo_id: todo_id
+      }
+    });
 
     row.style.opacity = 0;
 
@@ -437,7 +440,8 @@ function changeDate(row, hourglass_icon, end_date_h6, element) {
 }
 
 function edit(todo_id, element) {
-  let div = $('#todo' + todo_id);
+  let div = $('#' + todo_id);
+  console.log(div);
 
   let todo_text_div = div.children().eq(1);
 

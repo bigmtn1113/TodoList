@@ -62,7 +62,7 @@ async function addUser(userId, userPw) {
 }
 
 async function addTodo(content, due_date, user_id) {
-    let conn;
+    let conn, row;
 
     try {
         conn = await pool.getConnection();
@@ -73,12 +73,16 @@ async function addTodo(content, due_date, user_id) {
         } else {
             await conn.query(`insert into todo(content, user_id) values('${content}', '${user_id}')`);
         }
+
+        row = conn.query(`select todo_id from todo order by todo_id desc limit 1`);
     } catch(err) {
         throw err;
     } finally {
         if (conn) {
             conn.end();
         }
+
+        return row;
     }
 }
 

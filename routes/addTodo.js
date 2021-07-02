@@ -9,8 +9,9 @@ router.get('/', (req, res) => {
     let due_date = req.query['due_date'];
     let user_id = req.session.loginUserId;
 
-    mariadbConn.addTodo(content, due_date, user_id).then(() => {
-        res.end('ok');
+    mariadbConn.addTodo(content, due_date, user_id).then((row) => {
+        res.writeHead(200, {'Content-Type': 'application/json; charset=utf-8'});
+        res.end(JSON.stringify(row));
     });
 });
 
