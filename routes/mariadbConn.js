@@ -69,9 +69,9 @@ async function addTodo(content, due_date, user_id) {
         conn.query('use todolist');
         
         if (due_date) {
-            await conn .query(`insert into todo(content, due_date, user_id) values('${content}', '${due_date}', '${user_id}')`);
+            await conn.query(`insert into todo(content, due_date, user_id) values('${content}', '${due_date}', '${user_id}')`);
         } else {
-            await conn .query(`insert into todo(content, user_id) values('${content}', '${user_id}')`);
+            await conn.query(`insert into todo(content, user_id) values('${content}', '${user_id}')`);
         }
     } catch(err) {
         throw err;
@@ -90,9 +90,9 @@ async function updateTodo(todo_id, content, due_date, completion_status) {
         conn.query('use todolist');
 
         if (due_date) {
-            await conn .query(`update todo set content='${content}', due_date='${due_date}', completion_status='${completion_status}' where todo_id='${todo_id}'`);
+            await conn.query(`update todo set content='${content}', due_date='${due_date}', completion_status='${completion_status}' where todo_id='${todo_id}'`);
         } else {
-            await conn .query(`update todo set content='${content}', completion_status='${completion_status}' where todo_id='${todo_id}'`);
+            await conn.query(`update todo set content='${content}', completion_status='${completion_status}' where todo_id='${todo_id}'`);
         }
     } catch(err) {
         throw err;
@@ -103,4 +103,27 @@ async function updateTodo(todo_id, content, due_date, completion_status) {
     }
 }
 
-module.exports = {getUser: getUser, getTodoListOfUser: getTodoListOfUser, addUser: addUser, addTodo: addTodo, updateTodo: updateTodo};
+async function deleteTodo(todo_id) {
+    let conn;
+
+    try {
+        conn = await pool.getConnection();
+        conn.query('use todolist');
+        await conn.query(`delete from todo where todo_id='${todo_id}'`);
+    } catch(err) {
+        throw err;
+    } finally {
+        if (conn) {
+            conn.end();
+        }
+    }
+}
+
+module.exports = {
+    getUser: getUser
+    , getTodoListOfUser: getTodoListOfUser
+    , addUser: addUser
+    , addTodo: addTodo
+    , updateTodo: updateTodo
+    , deleteTodo: deleteTodo
+};

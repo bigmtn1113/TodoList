@@ -363,7 +363,15 @@ function createTodoActions(row, todo_id, element) {
   let delete_icon = document.createElement('i');
   delete_icon.className = 'fa fa-trash-o text-danger btn m-0 p-0';
 
-  delete_icon.onclick = function() {
+  delete_icon.onclick = async function() {
+    if (element) {
+      await axios.get('/deleteTodo', {
+        params: {
+          todo_id: element.todo_id
+        }
+      });
+    }
+
     row.style.opacity = 0;
 
     setTimeout(function() {

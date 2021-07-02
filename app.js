@@ -14,6 +14,7 @@ const joinProcessRouter = require('./routes/joinProcess');
 const userTodoListRouter = require('./routes/userTodoList');
 const addTodoRouter = require('./routes/addTodo');
 const updateTodoRouter = require('./routes/updateTodo');
+const deleteTodoRouter = require('./routes/deleteTodo');
 const logoutRouter = require('./routes/logout');
 
 const app = express();
@@ -43,6 +44,7 @@ app.use('/joinProcess', joinProcessRouter);
 app.use('/userTodoList', userTodoListRouter);
 app.use('/addTodo', addTodoRouter);
 app.use('/updateTodo', updateTodoRouter);
+app.use('/deleteTodo', deleteTodoRouter);
 app.use('/logout', logoutRouter);
 
 app.set('view engine', 'ejs');
