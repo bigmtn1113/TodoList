@@ -198,7 +198,18 @@ function createCheckBtn(row, element) {
   let check_btn = document.createElement('todo_idx');
   check_btn.className = 'fa fa-check-square-o text-primary btn m-0 p-0 d-none';
 
-  uncheck_btn.onclick = function() {
+  uncheck_btn.onclick = async function() {
+    if (element) {
+      await axios.get('/updateTodo', {
+        params: {
+          todo_id: element.todo_id
+          , content: element.content
+          , due_date: element.due_date
+          , completion_status: '1'
+        }
+      });
+    }
+
     row.classList.remove('active');
     row.className += ' completed';
 
@@ -206,7 +217,18 @@ function createCheckBtn(row, element) {
     check_btn.classList.remove('d-none');
   }
 
-  check_btn.onclick = function() {
+  check_btn.onclick = async function() {
+    if (element) {
+      await axios.get('/updateTodo', {
+        params: {
+          todo_id: element.todo_id
+          , content: element.content
+          , due_date: element.due_date
+          , completion_status: '0'
+        }
+      });
+    }
+
     row.classList.remove('completed');
     row.className += ' active';
 
