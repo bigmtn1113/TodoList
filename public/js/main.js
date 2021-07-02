@@ -171,7 +171,7 @@ function click_event()
   }
 }
 
-function addTodo(todoFromDB) {
+async function addTodo(todoFromDB) {
   let row = document.createElement('div');
   row.className = 'row px-3 align-items-center todo-item rounded active';
 
@@ -182,23 +182,23 @@ function addTodo(todoFromDB) {
       due_date = null;
     }
 
-    let todo_id;
+    todoFromDB = await axios.get('/addTodo', {
+      params: {
+        content: document.querySelector('input').value
+        , due_date: due_date
+      }
+    });
 
-    addTodoToDB = async () => {
-      todo_id = await axios.get('/addTodo', {
-        params: {
-          content: document.querySelector('input').value
-          , due_date: due_date
-        }
-      });
+    todoFromDB = todoFromDB.data[0];
 
-      row.id = 'todo' + todo_id.data[0].todo_id;
-    }
+    todoFromDB.start_date = todoFromDB.start_date.substring(0, 4) + '-' + todoFromDB.start_date.substring(5, 7) + '-' + todoFromDB.start_date.substring(8, 10);
     
-    addTodoToDB();
-  } else {
-    row.id = 'todo' + todoFromDB.todo_id;
+    if (todoFromDB.due_date) {
+      todoFromDB.due_date = todoFromDB.due_date.substring(0, 4) + '-' + todoFromDB.due_date.substring(5, 7) + '-' + ('0' + (Number(todoFromDB.due_date.substring(8, 10)) + 1)).slice(-2);
+    }     
   }
+
+  row.id = 'todo' + todoFromDB.todo_id;
 
   createCheckBtn(row, todoFromDB);
   createTodoText(row, todoFromDB);
@@ -225,16 +225,14 @@ function createCheckBtn(row, todoFromDB) {
   check_btn.className = 'fa fa-check-square-o text-primary btn m-0 p-0 d-none';
 
   uncheck_btn.onclick = async function() {
-    if (todoFromDB) {
-      await axios.get('/updateTodo', {
-        params: {
-          todo_id: todoFromDB.todo_id
-          , content: todoFromDB.content
-          , due_date: todoFromDB.due_date
-          , completion_status: '1'
-        }
-      });
-    }
+    await axios.get('/updateTodo', {
+      params: {
+        todo_id: todoFromDB.todo_id
+        , content: todoFromDB.content
+        , due_date: todoFromDB.due_date
+        , completion_status: '1'
+      }
+    });
 
     row.classList.remove('active');
     row.className += ' completed';
@@ -244,16 +242,14 @@ function createCheckBtn(row, todoFromDB) {
   }
 
   check_btn.onclick = async function() {
-    if (todoFromDB) {
-      await axios.get('/updateTodo', {
-        params: {
-          todo_id: todoFromDB.todo_id
-          , content: todoFromDB.content
-          , due_date: todoFromDB.due_date
-          , completion_status: '0'
-        }
-      });
-    }
+    await axios.get('/updateTodo', {
+      params: {
+        todo_id: todoFromDB.todo_id
+        , content: todoFromDB.content
+        , due_date: todoFromDB.due_date
+        , completion_status: '0'
+      }
+    });
 
     row.classList.remove('completed');
     row.className += ' active';
@@ -278,12 +274,12 @@ function createTodoText(row, todoFromDB) {
   input_text.type = 'text';
   input_text.className = 'form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3';
   input_text.readOnly = true;
-  input_text.value = (!todoFromDB) ? $('input').val() : todoFromDB.content;
+  input_text.value = todoFromDB.content;
   
   let edit_text = document.createElement('input');
   edit_text.type = 'text';
   edit_text.className = 'form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none';
-  edit_text.value = (!todoFromDB) ? $('input').val() : todoFromDB.content;
+  edit_text.value = todoFromDB.content;
 
   div.appendChild(input_text);
   div.appendChild(edit_text);
@@ -306,9 +302,9 @@ function createDeadline(row, todoFromDB) {
 
   let end_date_h6 = document.createElement('h6');
   end_date_h6.className = 'text my-2 pr-2';
-  end_date_h6.innerHTML = (!todoFromDB) ? $('#calendar_label').html() : todoFromDB.due_date;
+  end_date_h6.innerHTML = todoFromDB.due_date;
 
-  if (todoFromDB && !todoFromDB.due_date) {
+  if (!todoFromDB.due_date) {
     end_date_h6.innerHTML = 'Due date not set';
   }
 
@@ -353,7 +349,7 @@ function createTodoActions(row, todoFromDB) {
 
   edit_icon.onclick = function() {
     edit_icon.className += ' d-none';
-    edit(row.id, todoFromDB);
+    edit(todoFromDB);
   }
 
   edit_icon_h5.appendChild(edit_icon);
@@ -365,11 +361,9 @@ function createTodoActions(row, todoFromDB) {
   delete_icon.className = 'fa fa-trash-o text-danger btn m-0 p-0';
 
   delete_icon.onclick = async function() {
-    let todo_id = (todoFromDB) ? todoFromDB.todo_id : row.id.slice(4);
-
     await axios.get('/deleteTodo', {
       params: {
-        todo_id: todo_id
+        todo_id: todoFromDB.todo_id
       }
     });
 
@@ -397,10 +391,7 @@ function createTodoActions(row, todoFromDB) {
   let create_info_date = document.createElement('label');
   create_info_date.className = 'date-label my-2 text-black-50';
 
-  let date = new Date();
-  create_info_date.innerHTML = (!todoFromDB)
-    ? date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2)
-    : todoFromDB.start_date;
+  create_info_date.innerHTML = todoFromDB.start_date;
 
   create_info_items_div.appendChild(create_info_icon);
   create_info_items_div.appendChild(create_info_date);
@@ -417,16 +408,14 @@ function changeDate(row, hourglass_icon, end_date_h6, todoFromDB) {
   $(hourglass_icon).datepicker('show').on('changeDate', async function (dateChangeEvent) {
     let selectedDate = dateChangeEvent.date.getFullYear() + '-' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '-' + ('0' + dateChangeEvent.date.getDate()).slice(-2);
 
-    if (todoFromDB) {
-      await axios.get('/updateTodo', {
-        params: {
-          todo_id: todoFromDB.todo_id
-          , content: todoFromDB.content
-          , due_date: selectedDate
-          , completion_status: todoFromDB.completion_status
-        }
-      });
-    } 
+    await axios.get('/updateTodo', {
+      params: {
+        todo_id: todoFromDB.todo_id
+        , content: todoFromDB.content
+        , due_date: selectedDate
+        , completion_status: todoFromDB.completion_status
+      }
+    }); 
 
     $(hourglass_icon).datepicker('hide');
     $(end_date_h6).text(selectedDate);
@@ -437,9 +426,8 @@ function changeDate(row, hourglass_icon, end_date_h6, todoFromDB) {
   });
 }
 
-function edit(todo_id, todoFromDB) {
-  let div = $('#' + todo_id);
-  console.log(div);
+function edit(todoFromDB) {
+  let div = $('#todo' + todoFromDB.todo_id);
 
   let todo_text_div = div.children().eq(1);
 
@@ -451,16 +439,14 @@ function edit(todo_id, todoFromDB) {
 
   edit_text.on('keypress', async function() {
     if (event.keyCode == 13) {
-      if (todoFromDB) {
-        await axios.get('/updateTodo', {
-          params: {
-            todo_id: todoFromDB.todo_id
-            , content: edit_text.val()
-            , due_date: todoFromDB.due_date
-            , completion_status: todoFromDB.completion_status
-          }
-        });
-      }
+      await axios.get('/updateTodo', {
+        params: {
+          todo_id: todoFromDB.todo_id
+          , content: edit_text.val()
+          , due_date: todoFromDB.due_date
+          , completion_status: todoFromDB.completion_status
+        }
+      });
 
       input_text.val(edit_text.val());
       
