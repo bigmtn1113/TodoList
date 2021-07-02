@@ -1,18 +1,16 @@
-let userTodoList;
-
 window.onload = function () {
   getUserTodoList = async function() {
-    userTodoList = await axios.get('/userTodoList');
+    let userTodoList = await axios.get('/userTodoList');
     userTodoList = userTodoList.data;
 
-    userTodoList.forEach(element => {
-      element.start_date = element.start_date.substring(0, 4) + '-' + element.start_date.substring(5, 7) + '-' + element.start_date.substring(8, 10);
+    userTodoList.forEach(todoFromDB => {
+      todoFromDB.start_date = todoFromDB.start_date.substring(0, 4) + '-' + todoFromDB.start_date.substring(5, 7) + '-' + todoFromDB.start_date.substring(8, 10);
       
-      if (element.due_date) {
-        element.due_date = element.due_date.substring(0, 4) + '-' + element.due_date.substring(5, 7) + '-' + ('0' + (Number(element.due_date.substring(8, 10)) + 1)).slice(-2);
+      if (todoFromDB.due_date) {
+        todoFromDB.due_date = todoFromDB.due_date.substring(0, 4) + '-' + todoFromDB.due_date.substring(5, 7) + '-' + ('0' + (Number(todoFromDB.due_date.substring(8, 10)) + 1)).slice(-2);
       }
 
-      addTodo(element);
+      addTodo(todoFromDB);
     });
   }
   
@@ -173,11 +171,11 @@ function click_event()
   }
 }
 
-function addTodo(element) {
+function addTodo(todoFromDB) {
   let row = document.createElement('div');
   row.className = 'row px-3 align-items-center todo-item rounded active';
 
-  if (!element) {
+  if (!todoFromDB) {
     let due_date = document.querySelector('.due-date-label').innerHTML;
 
     if (due_date === 'Due date not set') {
@@ -199,13 +197,13 @@ function addTodo(element) {
     
     addTodoToDB();
   } else {
-    row.id = 'todo' + element.todo_id;
+    row.id = 'todo' + todoFromDB.todo_id;
   }
 
-  createCheckBtn(row, element);
-  createTodoText(row, element);
-  createDeadline(row, element);
-  createTodoActions(row, element);
+  createCheckBtn(row, todoFromDB);
+  createTodoText(row, todoFromDB);
+  createDeadline(row, todoFromDB);
+  createTodoActions(row, todoFromDB);
 
   $('#list').append(row);
   $('#calendar_label').html("Due date not set");
@@ -213,7 +211,7 @@ function addTodo(element) {
   createFadeIn(row);
 }
 
-function createCheckBtn(row, element) {
+function createCheckBtn(row, todoFromDB) {
   let check_btn_div = document.createElement('div');
   check_btn_div.className='col-auto m-1 p-0 d-flex align-items-center';
 
@@ -227,12 +225,12 @@ function createCheckBtn(row, element) {
   check_btn.className = 'fa fa-check-square-o text-primary btn m-0 p-0 d-none';
 
   uncheck_btn.onclick = async function() {
-    if (element) {
+    if (todoFromDB) {
       await axios.get('/updateTodo', {
         params: {
-          todo_id: element.todo_id
-          , content: element.content
-          , due_date: element.due_date
+          todo_id: todoFromDB.todo_id
+          , content: todoFromDB.content
+          , due_date: todoFromDB.due_date
           , completion_status: '1'
         }
       });
@@ -246,12 +244,12 @@ function createCheckBtn(row, element) {
   }
 
   check_btn.onclick = async function() {
-    if (element) {
+    if (todoFromDB) {
       await axios.get('/updateTodo', {
         params: {
-          todo_id: element.todo_id
-          , content: element.content
-          , due_date: element.due_date
+          todo_id: todoFromDB.todo_id
+          , content: todoFromDB.content
+          , due_date: todoFromDB.due_date
           , completion_status: '0'
         }
       });
@@ -272,7 +270,7 @@ function createCheckBtn(row, element) {
   row.appendChild(check_btn_div);
 }
 
-function createTodoText(row, element) {
+function createTodoText(row, todoFromDB) {
   let div = document.createElement('div');
   div.className='col px-1 m-1 d-flex align-items-center';
 
@@ -280,12 +278,12 @@ function createTodoText(row, element) {
   input_text.type = 'text';
   input_text.className = 'form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3';
   input_text.readOnly = true;
-  input_text.value = (!element) ? $('input').val() : element.content;
+  input_text.value = (!todoFromDB) ? $('input').val() : todoFromDB.content;
   
   let edit_text = document.createElement('input');
   edit_text.type = 'text';
   edit_text.className = 'form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none';
-  edit_text.value = (!element) ? $('input').val() : element.content;
+  edit_text.value = (!todoFromDB) ? $('input').val() : todoFromDB.content;
 
   div.appendChild(input_text);
   div.appendChild(edit_text);
@@ -293,7 +291,7 @@ function createTodoText(row, element) {
   row.appendChild(div);
 }
 
-function createDeadline(row, element) {
+function createDeadline(row, todoFromDB) {
   let div = document.createElement('div');
   div.className='col-auto m-1 p-0 px-3';
 
@@ -308,9 +306,9 @@ function createDeadline(row, element) {
 
   let end_date_h6 = document.createElement('h6');
   end_date_h6.className = 'text my-2 pr-2';
-  end_date_h6.innerHTML = (!element) ? $('#calendar_label').html() : element.due_date;
+  end_date_h6.innerHTML = (!todoFromDB) ? $('#calendar_label').html() : todoFromDB.due_date;
 
-  if (element && !element.due_date) {
+  if (todoFromDB && !todoFromDB.due_date) {
     end_date_h6.innerHTML = 'Due date not set';
   }
 
@@ -327,7 +325,7 @@ function createDeadline(row, element) {
       orientation: 'top left'
     });
 
-    changeDate(row, hourglass_icon, end_date_h6, element);
+    changeDate(row, hourglass_icon, end_date_h6, todoFromDB);
   };
 
   end_date_div.appendChild(hourglass_icon);
@@ -340,7 +338,7 @@ function createDeadline(row, element) {
   row.appendChild(div);
 }
 
-function createTodoActions(row, element) {
+function createTodoActions(row, todoFromDB) {
   let div = document.createElement('div');
   div.className='col-auto m-1 p-0 todo-actions';
 
@@ -355,7 +353,7 @@ function createTodoActions(row, element) {
 
   edit_icon.onclick = function() {
     edit_icon.className += ' d-none';
-    edit(row.id, element);
+    edit(row.id, todoFromDB);
   }
 
   edit_icon_h5.appendChild(edit_icon);
@@ -367,7 +365,7 @@ function createTodoActions(row, element) {
   delete_icon.className = 'fa fa-trash-o text-danger btn m-0 p-0';
 
   delete_icon.onclick = async function() {
-    let todo_id = (element) ? element.todo_id : row.id.slice(4);
+    let todo_id = (todoFromDB) ? todoFromDB.todo_id : row.id.slice(4);
 
     await axios.get('/deleteTodo', {
       params: {
@@ -400,9 +398,9 @@ function createTodoActions(row, element) {
   create_info_date.className = 'date-label my-2 text-black-50';
 
   let date = new Date();
-  create_info_date.innerHTML = (!element)
+  create_info_date.innerHTML = (!todoFromDB)
     ? date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2)
-    : element.start_date;
+    : todoFromDB.start_date;
 
   create_info_items_div.appendChild(create_info_icon);
   create_info_items_div.appendChild(create_info_date);
@@ -415,17 +413,17 @@ function createTodoActions(row, element) {
   row.appendChild(div);
 }
 
-function changeDate(row, hourglass_icon, end_date_h6, element) {
+function changeDate(row, hourglass_icon, end_date_h6, todoFromDB) {
   $(hourglass_icon).datepicker('show').on('changeDate', async function (dateChangeEvent) {
     let selectedDate = dateChangeEvent.date.getFullYear() + '-' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '-' + ('0' + dateChangeEvent.date.getDate()).slice(-2);
 
-    if (element) {
+    if (todoFromDB) {
       await axios.get('/updateTodo', {
         params: {
-          todo_id: element.todo_id
-          , content: element.content
+          todo_id: todoFromDB.todo_id
+          , content: todoFromDB.content
           , due_date: selectedDate
-          , completion_status: element.completion_status
+          , completion_status: todoFromDB.completion_status
         }
       });
     } 
@@ -439,7 +437,7 @@ function changeDate(row, hourglass_icon, end_date_h6, element) {
   });
 }
 
-function edit(todo_id, element) {
+function edit(todo_id, todoFromDB) {
   let div = $('#' + todo_id);
   console.log(div);
 
@@ -453,13 +451,13 @@ function edit(todo_id, element) {
 
   edit_text.on('keypress', async function() {
     if (event.keyCode == 13) {
-      if (element) {
+      if (todoFromDB) {
         await axios.get('/updateTodo', {
           params: {
-            todo_id: element.todo_id
+            todo_id: todoFromDB.todo_id
             , content: edit_text.val()
-            , due_date: element.due_date
-            , completion_status: element.completion_status
+            , due_date: todoFromDB.due_date
+            , completion_status: todoFromDB.completion_status
           }
         });
       }
