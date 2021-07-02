@@ -218,10 +218,10 @@ function createCheckBtn(row, todoFromDB) {
   let check_btn_h2 = document.createElement('h2');
   check_btn_h2.className = 'm-0 p-0';
   
-  let uncheck_btn = document.createElement('todo_id');
+  let uncheck_btn = document.createElement('i');
   uncheck_btn.className = 'fa fa-square-o text-primary btn m-0 p-0';
 
-  let check_btn = document.createElement('todo_id');
+  let check_btn = document.createElement('i');
   check_btn.className = 'fa fa-check-square-o text-primary btn m-0 p-0 d-none';
 
   uncheck_btn.onclick = async function() {
