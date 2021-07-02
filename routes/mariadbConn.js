@@ -61,6 +61,27 @@ async function addUser(userId, userPw) {
     }
 }
 
+async function addTodo(content, due_date, user_id) {
+    let conn;
+
+    try {
+        conn = await pool.getConnection();
+        conn.query('use todolist');
+        
+        if (due_date) {
+            await conn .query(`insert into todo(content, due_date, user_id) values('${content}', '${due_date}', '${user_id}')`);
+        } else {
+            await conn .query(`insert into todo(content, user_id) values('${content}', '${user_id}')`);
+        }
+    } catch(err) {
+        throw err;
+    } finally {
+        if (conn) {
+            conn.end();
+        }
+    }
+}
+
 async function updateTodo(todo_id, content, due_date, completion_status) {
     let conn;
 
@@ -74,7 +95,7 @@ async function updateTodo(todo_id, content, due_date, completion_status) {
             await conn .query(`update todo set content='${content}', completion_status='${completion_status}' where todo_id='${todo_id}'`);
         }
     } catch(err) {
-        throw err
+        throw err;
     } finally {
         if(conn) {
             conn.end();
@@ -82,4 +103,4 @@ async function updateTodo(todo_id, content, due_date, completion_status) {
     }
 }
 
-module.exports = {getUser: getUser, getTodoListOfUser: getTodoListOfUser, addUser: addUser, updateTodo: updateTodo};
+module.exports = {getUser: getUser, getTodoListOfUser: getTodoListOfUser, addUser: addUser, addTodo: addTodo, updateTodo: updateTodo};

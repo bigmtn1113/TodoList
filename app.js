@@ -12,6 +12,7 @@ const joinRouter = require('./routes/join');
 const loginProcessRouter = require('./routes/loginProcess');
 const joinProcessRouter = require('./routes/joinProcess');
 const userTodoListRouter = require('./routes/userTodoList');
+const addTodoRouter = require('./routes/addTodo');
 const updateTodoRouter = require('./routes/updateTodo');
 const logoutRouter = require('./routes/logout');
 
@@ -40,6 +41,7 @@ app.use('/join', joinRouter);
 app.use('/loginProcess', loginProcessRouter);
 app.use('/joinProcess', joinProcessRouter);
 app.use('/userTodoList', userTodoListRouter);
+app.use('/addTodo', addTodoRouter);
 app.use('/updateTodo', updateTodoRouter);
 app.use('/logout', logoutRouter);
 

@@ -180,6 +180,25 @@ function addTodo(todo_id, element) {
   row.id = 'todo' + todo_id;
   row.className = 'row px-3 align-items-center todo-item rounded active';
 
+  if (!element) {
+    let due_date = document.querySelector('.due-date-label').innerHTML;
+
+    if (due_date === 'Due date not set') {
+      due_date = null;
+    }
+
+    addTodoToDB = async () => {
+      await axios.get('/addTodo', {
+        params: {
+          content: document.querySelector('input').value
+          , due_date: due_date
+        }
+      });
+    }
+    
+    addTodoToDB();
+  }
+
   createCheckBtn(row, element);
   createTodoText(row, element);
   createDeadline(row, element);
