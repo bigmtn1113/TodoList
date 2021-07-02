@@ -282,8 +282,9 @@ function createDeadline(row, element) {
   end_date_h6.className = 'text my-2 pr-2';
   end_date_h6.innerHTML = (!element) ? $('#calendar_label').html() : element.due_date;
 
-  if (element && (element.due_date === null)) {
-    end_date_h6.innerHTML = 'Due date not set';
+  if (element) {
+    end_date_h6.innerHTML = (!element.due_date) ? 'Due date not set'
+      : element.due_date.substring(0, 4) + '-' + element.due_date.substring(5, 7) + '-' + (Number(element.due_date.substring(8, 10)) + 1);
   }
 
   if (end_date_h6.innerHTML != 'Due date not set') {
@@ -299,7 +300,7 @@ function createDeadline(row, element) {
       orientation: 'top left'
     });
 
-    changeDate(row, hourglass_icon, end_date_h6);
+    changeDate(row, hourglass_icon, end_date_h6, element);
   };
 
   end_date_div.appendChild(hourglass_icon);
@@ -379,10 +380,23 @@ function createTodoActions(row, todo_id, element) {
   row.appendChild(div);
 }
 
-function changeDate(row, hourglass_icon, end_date_h6) {
-  $(hourglass_icon).datepicker('show').on('changeDate', function (dateChangeEvent) {
+function changeDate(row, hourglass_icon, end_date_h6, element) {
+  $(hourglass_icon).datepicker('show').on('changeDate', async function (dateChangeEvent) {
+    let selectedDate = dateChangeEvent.date.getFullYear() + '-' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '-' + ('0' + dateChangeEvent.date.getDate()).slice(-2);
+
+    if (element) {
+      await axios.get('/updateTodo', {
+        params: {
+          todo_id: element.todo_id
+          , content: element.content
+          , due_date: selectedDate
+          , completion_status: element.completion_status
+        }
+      });
+    } 
+
     $(hourglass_icon).datepicker('hide');
-    $(end_date_h6).text(dateChangeEvent.date.getFullYear() + '-' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '-' + ('0' + dateChangeEvent.date.getDate()).slice(-2));
+    $(end_date_h6).text(selectedDate);
 
     if (!row.classList.contains('has-due-date')) {
       row.className += ' has-due-date';
