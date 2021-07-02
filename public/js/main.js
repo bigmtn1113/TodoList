@@ -360,7 +360,7 @@ function createTodoActions(row, todo_idx, element) {
 function changeDate(row, hourglass_icon, end_date_h6) {
   $(hourglass_icon).datepicker('show').on('changeDate', function (dateChangeEvent) {
     $(hourglass_icon).datepicker('hide');
-    $(end_date_h6).text(dateChangeEvent.date.getFullYear() + '/' + (dateChangeEvent.date.getMonth() + 1) + '/' + dateChangeEvent.date.getDate());
+    $(end_date_h6).text(dateChangeEvent.date.getFullYear() + '/' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '/' + ('0' + dateChangeEvent.date.getDate()).slice(-2));
 
     if (!row.classList.contains('has-due-date')) {
       row.className += ' has-due-date';
