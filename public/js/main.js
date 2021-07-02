@@ -1,5 +1,5 @@
 let userTodoList;
-let todo_idx;
+let todo_id;
 
 window.onload = function () {
   getUserTodoList = async function() {
@@ -7,8 +7,8 @@ window.onload = function () {
     userTodoList = userTodoList.data;
 
     userTodoList.forEach(element => {
-      todo_idx = element.todo_id;
-      addTodo(todo_idx, element);
+      todo_id = element.todo_id;
+      addTodo(todo_id, element);
     });
   }
   
@@ -163,21 +163,21 @@ function click_event()
   }
   else
   {
-    addTodo(++todo_idx, null);
+    addTodo(++todo_id, null);
 
     $('input').eq(0).val('');
   }
 }
 
-function addTodo(todo_idx, element) {
+function addTodo(todo_id, element) {
   let row = document.createElement('div');
-  row.id = 'todo' + todo_idx;
+  row.id = 'todo' + todo_id;
   row.className = 'row px-3 align-items-center todo-item rounded active';
 
   createCheckBtn(row, element);
   createTodoText(row, element);
   createDeadline(row, element);
-  createTodoActions(row, todo_idx, element);
+  createTodoActions(row, todo_id, element);
 
   $('#list').append(row);
   $('#calendar_label').html("Due date not set");
@@ -192,10 +192,10 @@ function createCheckBtn(row, element) {
   let check_btn_h2 = document.createElement('h2');
   check_btn_h2.className = 'm-0 p-0';
   
-  let uncheck_btn = document.createElement('todo_idx');
+  let uncheck_btn = document.createElement('todo_id');
   uncheck_btn.className = 'fa fa-square-o text-primary btn m-0 p-0';
 
-  let check_btn = document.createElement('todo_idx');
+  let check_btn = document.createElement('todo_id');
   check_btn.className = 'fa fa-check-square-o text-primary btn m-0 p-0 d-none';
 
   uncheck_btn.onclick = async function() {
@@ -312,7 +312,7 @@ function createDeadline(row, element) {
   row.appendChild(div);
 }
 
-function createTodoActions(row, todo_idx, element) {
+function createTodoActions(row, todo_id, element) {
   let div = document.createElement('div');
   div.className='col-auto m-1 p-0 todo-actions';
 
@@ -327,7 +327,7 @@ function createTodoActions(row, todo_idx, element) {
 
   edit_icon.onclick = function() {
     edit_icon.className += ' d-none';
-    edit(todo_idx);
+    edit(todo_id);
   }
 
   edit_icon_h5.appendChild(edit_icon);
@@ -390,8 +390,8 @@ function changeDate(row, hourglass_icon, end_date_h6) {
   });
 }
 
-function edit(todo_idx) {
-  let div = $('#todo' + todo_idx);
+function edit(todo_id) {
+  let div = $('#todo' + todo_id);
 
   let todo_text_div = div.children().eq(1);
 
