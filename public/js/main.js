@@ -8,6 +8,12 @@ window.onload = function () {
 
     userTodoList.forEach(element => {
       todo_id = element.todo_id;
+      element.start_date = element.start_date.substring(0, 4) + '-' + element.start_date.substring(5, 7) + '-' + element.start_date.substring(8, 10);
+      
+      if (element.due_date) {
+        element.due_date = element.due_date.substring(0, 4) + '-' + element.due_date.substring(5, 7) + '-' + ('0' + (Number(element.due_date.substring(8, 10)) + 1)).slice(-2);
+      }
+
       addTodo(todo_id, element);
     });
   }
@@ -282,9 +288,8 @@ function createDeadline(row, element) {
   end_date_h6.className = 'text my-2 pr-2';
   end_date_h6.innerHTML = (!element) ? $('#calendar_label').html() : element.due_date;
 
-  if (element) {
-    end_date_h6.innerHTML = (!element.due_date) ? 'Due date not set'
-      : element.due_date.substring(0, 4) + '-' + element.due_date.substring(5, 7) + '-' + (Number(element.due_date.substring(8, 10)) + 1);
+  if (element && !element.due_date) {
+    end_date_h6.innerHTML = 'Due date not set';
   }
 
   if (end_date_h6.innerHTML != 'Due date not set') {
@@ -328,7 +333,7 @@ function createTodoActions(row, todo_id, element) {
 
   edit_icon.onclick = function() {
     edit_icon.className += ' d-none';
-    edit(todo_id);
+    edit(todo_id, element);
   }
 
   edit_icon_h5.appendChild(edit_icon);
@@ -367,7 +372,7 @@ function createTodoActions(row, todo_id, element) {
   let date = new Date();
   create_info_date.innerHTML = (!element)
     ? date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2)
-    : element.start_date.substring(0, 4) + '-' + element.start_date.substring(5, 7) + '-' + element.start_date.substring(8, 10);
+    : element.start_date;
 
   create_info_items_div.appendChild(create_info_icon);
   create_info_items_div.appendChild(create_info_date);
@@ -404,7 +409,7 @@ function changeDate(row, hourglass_icon, end_date_h6, element) {
   });
 }
 
-function edit(todo_id) {
+function edit(todo_id, element) {
   let div = $('#todo' + todo_id);
 
   let todo_text_div = div.children().eq(1);
@@ -415,8 +420,19 @@ function edit(todo_id) {
   input_text.addClass('d-none');
   edit_text.removeClass('d-none');
 
-  edit_text.on('keypress', function() {
+  edit_text.on('keypress', async function() {
     if (event.keyCode == 13) {
+      if (element) {
+        await axios.get('/updateTodo', {
+          params: {
+            todo_id: element.todo_id
+            , content: edit_text.val()
+            , due_date: element.due_date
+            , completion_status: element.completion_status
+          }
+        });
+      }
+
       input_text.val(edit_text.val());
       
       input_text.removeClass('d-none');
