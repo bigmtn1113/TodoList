@@ -98,7 +98,9 @@ function sortAscendingOrder() {
 
   if (sort === 'added-date') {
     todo_list.sort(function(a, b) {
-      // 현재로는 만든 날짜만 존재할 수 있으니, 향후 구현
+      return ($(a).find('.date-label').html() === $(b).find('.date-label').html())
+      ? 0
+      : ($(a).find('.date-label').html() < $(b).find('.date-label').html()) ? -1 : 1;
     });
   } else {
     todo_list.sort(function(a, b) {
@@ -131,7 +133,9 @@ function sortDescendingOrder() {
 
   if (sort === 'added-date') {
     todo_list.sort(function(a, b) {
-      // 현재로는 만든 날짜만 존재할 수 있으니, 향후 구현
+      return ($(a).find('.date-label').html() === $(b).find('.date-label').html())
+      ? 0
+      : ($(a).find('.date-label').html() > $(b).find('.date-label').html()) ? -1 : 1;
     });
   } else {
     todo_list.sort(function(a, b) {
