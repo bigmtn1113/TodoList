@@ -159,8 +159,7 @@ function click_event()
   }
   else
   {
-    addTodo(todo_idx, null);
-    ++todo_idx;
+    addTodo(++todo_idx, null);
 
     $('input').eq(0).val('');
   }
