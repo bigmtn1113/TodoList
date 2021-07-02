@@ -34,7 +34,7 @@ window.onload = function () {
   $('.due-date-button').on('click', function (event) {
     $('.due-date-button').datepicker('show').on('changeDate', function (dateChangeEvent) {
       $('.due-date-button').datepicker('hide');
-      $('.due-date-label').text(dateChangeEvent.date.getFullYear() + '/' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '/' + ('0' + dateChangeEvent.date.getDate()).slice(-2));
+      $('.due-date-label').text(dateChangeEvent.date.getFullYear() + '-' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '-' + ('0' + dateChangeEvent.date.getDate()).slice(-2));
       
       $('input').eq(0).focus();
     });
@@ -174,7 +174,7 @@ function addTodo(todo_idx, element) {
   row.id = 'todo' + todo_idx;
   row.className = 'row px-3 align-items-center todo-item rounded active';
 
-  createCheckBtn(row);
+  createCheckBtn(row, element);
   createTodoText(row, element);
   createDeadline(row, element);
   createTodoActions(row, todo_idx, element);
@@ -185,7 +185,7 @@ function addTodo(todo_idx, element) {
   createFadeIn(row);
 }
 
-function createCheckBtn(row) {
+function createCheckBtn(row, element) {
   let check_btn_div = document.createElement('div');
   check_btn_div.className='col-auto m-1 p-0 d-flex align-items-center';
 
@@ -343,8 +343,8 @@ function createTodoActions(row, todo_idx, element) {
 
   let date = new Date();
   create_info_date.innerHTML = (!element)
-    ? date.getFullYear() + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + ('0' + date.getDate()).slice(-2)
-    : element.start_date.substring(0, 4) + '/' + element.start_date.substring(5, 7) + '/' + element.start_date.substring(8, 10);
+    ? date.getFullYear() + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + ('0' + date.getDate()).slice(-2)
+    : element.start_date.substring(0, 4) + '-' + element.start_date.substring(5, 7) + '-' + element.start_date.substring(8, 10);
 
   create_info_items_div.appendChild(create_info_icon);
   create_info_items_div.appendChild(create_info_date);
@@ -360,7 +360,7 @@ function createTodoActions(row, todo_idx, element) {
 function changeDate(row, hourglass_icon, end_date_h6) {
   $(hourglass_icon).datepicker('show').on('changeDate', function (dateChangeEvent) {
     $(hourglass_icon).datepicker('hide');
-    $(end_date_h6).text(dateChangeEvent.date.getFullYear() + '/' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '/' + ('0' + dateChangeEvent.date.getDate()).slice(-2));
+    $(end_date_h6).text(dateChangeEvent.date.getFullYear() + '-' + ('0' + (dateChangeEvent.date.getMonth() + 1)).slice(-2) + '-' + ('0' + dateChangeEvent.date.getDate()).slice(-2));
 
     if (!row.classList.contains('has-due-date')) {
       row.className += ' has-due-date';
